@@ -1,13 +1,23 @@
-# Java beginner videos
+# Javascript beginner videos
 
 ## Video 1
-This video one
+It was a small introduction to the series, and all the members who were part of making the serie introduced themselves
 
 ## Video 2
+Main idea was what is Javascript in short, it is a programming language for creating enything, and it is the most used programming language in the world used by bug companies like meta and also used to make vscode and slack.
+
 ## Video 3
+Difference between javascript on the client and on the browser. On the client for example website and html code to build user interface, about srver side, you need node js to perform task specific to server side like reading texts.
+
 ## Video 4
+This video contained what you need to work with javascript, there were mentionned different tools like eslint, prettier and ES6 code snippets, also node js the runtime of javascript. Last was mentionned NVM tool that manage installing node js.
+
 ## Video 5
+How to add eslint extension and how to download nvm to set up javascript.
+
 ## Video 6
+
+
 ## Video 7
 ## Video 8
 ## Video 9
