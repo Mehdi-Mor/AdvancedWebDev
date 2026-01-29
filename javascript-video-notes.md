@@ -128,21 +128,21 @@ I learned that JSON is the universal language of data on the internet. It’s th
 Another demo showing how to convert a JavaScript object into a JSON string and back again. This is important for saving data or sending it over a network. We used JSON.stringify() and JSON.parse(). If you try to parse a string that isn't perfect JSON, you'll get a SyntaxError: Unexpected token.
 
 ## Video 43
-
+This was about how objects allow you to group related data and functions together.Using curly braces {}. Objects are for "things" (like a car with color and brand) while arrays are for "lists."
 
 ## Video 44
-
+Demo on objects. The example shows how to add new properties. You can use dot notation for example car.color = 'blue' to change values.
 
 ## Video 45
-
+I learned that Promises are used for "asynchronous" tasks that take time, like downloading a file.I learned how JS handles waiting without freezing also that a Promise can be "Pending," "Fulfilled," or "Rejected".
 
 ## Video 46
-
+Demo on Promises that shows .then() and .catch(). Without the .catch(), a failed download will cause an error.
 
 ## Video 47
 What async/await does, is to make asynchronous code a lttle bit more sychronous. To be honnest, it was hard to follow up and understand.
 ## Video 48
-Demonstrates async/await examples. In the previous theory video, async was hard to understand, but with this i understood more. 
+Demonstrates async/await examples. In the previous theory video, async was hard to understand, but with this i understood more. And wthe example demonstrated the await keyword and if you forget await, the code continues instantly and you'll get a 'Promise' object instead of the actual data.
 ## Video 49
 what is a package in javascript, a reusable bundle of code like libraries, tools like react given as example. They're important to save time. Most popular software registry is NPM. Two types of packages were also mentionned, depencies and devdependencies.
 ## Video 50
