@@ -33,9 +33,9 @@ async function onSubmit(event) {
     action: actionValue,
     resourceName: $("resourceName")?.value ?? "",
     resourceDescription: $("resourceDescription")?.value ?? "",
-    resourceAvailable: $("resourceAvailable")?.value ?? "",
-    resourcePrice: $("resourcePrice")?.value ?? "",
-    resourcePriceUnit: $("resourcePriceUnit")?.value ?? ""
+    resourceAvailable: $("resourceAvailable")?.checked ?? false,
+    resourcePrice: $("resourcePrice")?.value !== "" ? $("resourcePrice").value : "0",
+    resourcePriceUnit: document.querySelector('input[name="resourcePriceUnit"]:checked')?.value ?? "hour"
   };
 
   logSection("Sending payload to httpbin.org/post", payload);
