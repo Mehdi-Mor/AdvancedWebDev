@@ -129,6 +129,18 @@ function isResourceNameValid(value) {
   return lengthValid && charactersValid;
 }
 
+function isResourceDescriptionValid(value) {
+  const trimmed = value.trim();
+
+  // Allowed: letters, numbers, Finnish letters, and space
+  const allowedPattern = /^[a-zA-Z0-9äöåÄÖÅ ]+$/;
+
+  const lengthValid = trimmed.length >= 10 && trimmed.length <= 50;
+  const charactersValid = allowedPattern.test(trimmed);
+
+  return lengthValid && charactersValid;
+}
+
 function setInputVisualState(input, state) {
   // Reset to neutral base state (remove only our own validation-related classes)
   input.classList.remove(
@@ -155,7 +167,7 @@ function setInputVisualState(input, state) {
   }
 }
 
-function attachResourceNameValidation(input) {
+/*function attachResourceNameValidation(input) {
   const update = () => {
     const raw = input.value;
     if (raw.trim() === "") {
@@ -173,7 +185,60 @@ function attachResourceNameValidation(input) {
   // Real-time validation
   input.addEventListener("input", update);
 
+
   // Initialize state on page load (Create disabled until valid)
+  update();
+}*/
+
+function attachResourceNameValidation(input) {
+  const update = () => {
+    const raw = input.value;
+    if (raw.trim() === "") {
+      setInputVisualState(input, "neutral");
+      setButtonEnabled(createButton, false);
+      return;
+    }
+
+    const valid = isResourceNameValid(raw);
+    setInputVisualState(input, valid ? "valid" : "invalid");
+
+    // Combined check: also require description to be valid
+    const descInput = document.getElementById("resourceDescription");
+    const descValid = descInput ? isResourceDescriptionValid(descInput.value.trim()) : false;
+
+    setButtonEnabled(createButton, valid && descValid);
+  };
+
+  // Real-time validation
+  input.addEventListener("input", update);
+
+  // Initialize state on page load
+  update();
+}
+
+function attachResourceDescriptionValidation(input) {
+  const update = () => {
+    const raw = input.value;
+    if (raw.trim() === "") {
+      setInputVisualState(input, "neutral");
+      setButtonEnabled(createButton, false);
+      return;
+    }
+
+    const valid = isResourceDescriptionValid(raw);
+    setInputVisualState(input, valid ? "valid" : "invalid");
+
+    // Combined check: also require name to be valid
+    const nameInput = document.getElementById("resourceName");
+    const nameValid = nameInput ? isResourceNameValid(nameInput.value.trim()) : false;
+
+    setButtonEnabled(createButton, valid && nameValid);
+  };
+
+  // Real-time validation
+  input.addEventListener("input", update);
+
+  // Initialize state on page load
   update();
 }
 
@@ -185,3 +250,5 @@ renderActionButtons(role);
 // Create + validate input
 const resourceNameInput = createResourceNameInput(resourceNameContainer);
 attachResourceNameValidation(resourceNameInput);
+const resourceDescriptionInput = document.getElementById("resourceDescription");
+attachResourceDescriptionValidation(resourceDescriptionInput);
