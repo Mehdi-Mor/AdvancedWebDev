@@ -9,8 +9,7 @@ services:
     build: .
     image: bs-phase3
     ports:
-      - "${PORT}:${PORT}"
+      - "8081:80"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-
