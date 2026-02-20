@@ -30,7 +30,7 @@ async function onSubmit(event) {
 
   const payload = {
     action: actionValue,
-    resourceName: $("resourceNamee")?.value ?? "",
+    resourceName: $("resourceName")?.value ?? "",
     resourceDescription: $("resourceDescription")?.value ?? "",
     resourceAvailable: $("resourceAvailable")?.checked ?? false,
     resourcePrice,
@@ -55,7 +55,7 @@ async function onSubmit(event) {
     }
 
     // Creates an alert and a log message
-    const data = await response.json();
+    
     let msg = "Server response " + `[${timestamp()}]\n`;
     msg += "--------------------------\n";
     msg += "Status ➡️ " + response.status + "\n";
@@ -63,9 +63,9 @@ async function onSubmit(event) {
     msg += "Name ➡️ "+ data.echo.resourceName + "\n";
     msg += "Description ➡️ " + data.echo.resourceDescription + "\n";
     msg += "Availability ➡️ " + data.echo.resourceAvailable + "\n";
+    msg += "Price ➡️ " + data.echo.resourcePrice + "\n";
     msg += "Price unit ➡️ " + data.echo.resourcePriceUnit + "\n";
 
-    console.log("Server response " + `[${timestamp()}]`);
     console.log("--------------------------");
     console.log("Status ➡️ ", response.status);
     console.log("Action ➡️ ", data.echo.action);
@@ -73,11 +73,14 @@ async function onSubmit(event) {
     console.log("Description ➡️ ", data.echo.resourceDescription);
     console.log("Availability ➡️ ", data.echo.resourceAvailable);
     console.log("Price ➡️ ", data.echo.resourcePrice);
+    console.log("Price unit ➡️ ", data.echo.resourcePriceUnit);
 
     console.log("--------------------------");
     alert(msg);
 
   } catch (err) {
     console.error("POST error:", err);
+
+
   }
 }
