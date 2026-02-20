@@ -1,4 +1,3 @@
-
 // ===============================
 // Form handling for resources page
 // ===============================
@@ -17,22 +16,36 @@ function timestamp() {
 // -------------- Form wiring --------------
 document.addEventListener("DOMContentLoaded", () => {
   const form = $("resourceForm");
+  if (!form) return;
+
   form.addEventListener("submit", onSubmit);
 });
 
 async function onSubmit(event) {
   event.preventDefault();
+
   const submitter = event.submitter;
   const actionValue = submitter && submitter.value ? submitter.value : "create";
+
+  const resourceNameEl = $("resourceName");
+  const resourceDescriptionEl = $("resourceDescription");
+  const resourceAvailableEl = $("resourceAvailable");
+  const resourcePriceEl = $("resourcePrice");
+
+  if (!resourceNameEl || !resourceDescriptionEl) {
+    console.error("Resource inputs not found!");
+    return;
+  }
+
   const selectedUnit = document.querySelector('input[name="resourcePriceUnit"]:checked')?.value ?? "";
-  const priceRaw = $("resourcePrice")?.value ?? "";
+  const priceRaw = resourcePriceEl?.value ?? "";
   const resourcePrice = priceRaw === "" ? 0 : Number(priceRaw);
 
   const payload = {
     action: actionValue,
-    resourceName: $("resourceName")?.value ?? "",
-    resourceDescription: $("resourceDescription")?.value ?? "",
-    resourceAvailable: $("resourceAvailable")?.checked ?? false,
+    resourceName: resourceNameEl.value ?? "",
+    resourceDescription: resourceDescriptionEl.value ?? "",
+    resourceAvailable: resourceAvailableEl?.checked ?? false,
     resourcePrice,
     resourcePriceUnit: selectedUnit
   };
@@ -41,6 +54,7 @@ async function onSubmit(event) {
     console.log("--------------------------");
     console.log("The request send to the server " + `[${timestamp()}]`);
     console.log("--------------------------");
+
     const response = await fetch("/api/resources", {
       method: "POST",
       headers: {
@@ -55,7 +69,18 @@ async function onSubmit(event) {
     }
 
     // Creates an alert and a log message
-    
+    const data = await response.json();
+
+    console.log("--------------------------");
+    console.log("Status ➡️ ", response.status);
+    console.log("Action ➡️ ", data.echo.action);
+    console.log("Name ➡️ ", data.echo.resourceName);
+    console.log("Description ➡️ ", data.echo.resourceDescription);
+    console.log("Availability ➡️ ", data.echo.resourceAvailable);
+    console.log("Price ➡️ ", data.echo.resourcePrice);
+    console.log("Price unit ➡️ ", data.echo.resourcePriceUnit);
+    console.log("--------------------------");
+
     let msg = "Server response " + `[${timestamp()}]\n`;
     msg += "--------------------------\n";
     msg += "Status ➡️ " + response.status + "\n";
@@ -66,21 +91,9 @@ async function onSubmit(event) {
     msg += "Price ➡️ " + data.echo.resourcePrice + "\n";
     msg += "Price unit ➡️ " + data.echo.resourcePriceUnit + "\n";
 
-    console.log("--------------------------");
-    console.log("Status ➡️ ", response.status);
-    console.log("Action ➡️ ", data.echo.action);
-    console.log("Name ➡️ ", data.echo.resourceName);
-    console.log("Description ➡️ ", data.echo.resourceDescription);
-    console.log("Availability ➡️ ", data.echo.resourceAvailable);
-    console.log("Price ➡️ ", data.echo.resourcePrice);
-    console.log("Price unit ➡️ ", data.echo.resourcePriceUnit);
-
-    console.log("--------------------------");
     alert(msg);
 
   } catch (err) {
     console.error("POST error:", err);
-
-
   }
 }
