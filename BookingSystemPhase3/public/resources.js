@@ -133,7 +133,7 @@ function isResourceDescriptionValid(value) {
   // Reject <script> tags for security
   if (/<\s*script.*?>/i.test(trimmed)) return false;
 
-  const allowedPattern = /^[a-zA-Z0-9äöåÄÖÅ ><!\?\-\+\/\\]+$/;
+  const allowedPattern = /^[a-zA-Z0-9äöåÄÖÅ ]+$/;
 
   const lengthValid = trimmed.length >= 10 && trimmed.length <= 50;
   const charactersValid = allowedPattern.test(trimmed);
