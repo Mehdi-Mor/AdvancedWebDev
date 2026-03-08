@@ -1,5 +1,4 @@
 require("dotenv").config();
-const crypto = require('crypto');
 const express = require("express");
 const app = express();
 const PORT = process.env.IPORT;
@@ -46,21 +45,23 @@ const resourceValidators = [
     .exists({ checkFalsy: true }).withMessage('resourceName is required')
     .isString().withMessage('resourceName must be a string')
     .trim()
+    .isLength({ min: 3, max: 50 }).withMessage('resourceName must be 3-50 characters')
     .escape(),
 
   body('resourceDescription')
     .exists({ checkFalsy: true }).withMessage('resourceDescription is required')
     .isString().withMessage('resourceDescription must be a string')
     .trim()
-    .isLength({ min:10, max: 50 }).withMessage('resourceDescription must be 10-50 characters'),
+    .escape()
+    .isLength({ min:10, max: 50 }).withMessage('resourceDescription must be 10-50 characters')
+    .matches(/^[a-zA-ZäöåÄÖÅ ]+$/).withMessage('Invalid value'),
 
   body('resourceAvailable')
-    .exists({ checkFalsy: true }).withMessage('resourceAvailable is required')
-    .isBoolean().withMessage('resourceAvailable must be boolean')
+    .default(false)
     .toBoolean(), // coercion
 
   body('resourcePrice')
-    .exists({ checkFalsy: true }).withMessage('resourcePrice is required')
+    .default(0)
     .isFloat({ min: 0 }).withMessage('resourcePrice must be a non-negative number')
     .toFloat(), // coercion
 
@@ -68,7 +69,7 @@ const resourceValidators = [
     .exists({ checkFalsy: true }).withMessage('resourcePriceUnit is required')
     .isString().withMessage('resourcePriceUnit must be a string')
     .trim()
-    .isIn(['hour', 'day'])
+    .isIn(['hour', 'day', 'week', 'month'])
     .withMessage("resourcePriceUnit must be 'hour', 'day', 'week', or 'month'"),
 ];
 
@@ -108,8 +109,6 @@ app.post('/api/resources', resourceValidators, async (req, res) => {
     return res.status(400).json({ ok: false, error: 'Only create is implemented right now' });
   }
 
-  resourceAvailable = false;
-
   try {
     const insertSql = `
       INSERT INTO resources (name, description, available, price, price_unit)
@@ -117,10 +116,10 @@ app.post('/api/resources', resourceValidators, async (req, res) => {
       RETURNING id, name, description, available, price, price_unit, created_at
     `;
     const params = [
-      crypto.createHash('sha256').update(resourceName, 'utf8').digest('hex'),
+      resourceName,
       resourceDescription,
       Boolean(resourceAvailable),
-      Number(resourcePrice)*2,
+      resourcePrice,
       resourcePriceUnit
     ];
 
@@ -129,8 +128,9 @@ app.post('/api/resources', resourceValidators, async (req, res) => {
 
     return res.status(201).json({ ok: true, data: created });
   } catch (err) {
-    console.error('DB insert failed:', err);
-    return res.status(500).json({ ok: false, error: 'Database error' });
+    console.error('DB insert failed:', err.message);   // show the error message
+    console.error(err.stack);                          // show full stack trace
+    return res.status(500).json({ ok: false, error: err.message });
   }
 });
 
