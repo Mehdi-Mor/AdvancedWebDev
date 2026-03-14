@@ -127,7 +127,7 @@ function isResourceNameValid(value) {
   // Allowed: letters, numbers, Finnish letters, and space (based on your current regex)
   const allowedPattern = /^[a-zA-Z0-9äöåÄÖÅ ]+$/;
 
-  const lengthValid = trimmed.length >= 5 && trimmed.length <= 30;
+  const lengthValid = trimmed.length >= 3 && trimmed.length <= 50;
   const charactersValid = allowedPattern.test(trimmed);
 
   return lengthValid && charactersValid;

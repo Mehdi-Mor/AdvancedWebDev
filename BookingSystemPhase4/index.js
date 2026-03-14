@@ -46,6 +46,8 @@ const resourceValidators = [
     .isString().withMessage('resourceName must be a string')
     .trim()
     .isLength({ min: 3, max: 50 }).withMessage('resourceName must be 3-50 characters')
+    .matches(/^[a-zA-Z0-9äöåÄÖÅ ]+$/)
+    .withMessage('resourceName contains invalid characters')
     .escape(),
 
   body('resourceDescription')
