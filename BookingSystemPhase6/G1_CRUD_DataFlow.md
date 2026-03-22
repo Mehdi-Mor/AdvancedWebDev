@@ -64,14 +64,14 @@ sequenceDiagram
     S->>DB: SELECT * FROM resources WHERE id = $1
     DB-->>S: Result
 
-    alt Success
-        S-->>B: Resource data
-        B-->>F: 200 OK + data
-        F-->>U: Display resource
-    else Resource not found
+    alt Resource not found
         S-->>B: Empty result
         B-->>F: 404 Not Found
         F-->>U: Show "Resource not found"
+    else Success
+        S-->>B: Resource data
+        B-->>F: 200 OK + data
+        F-->>U: Display resource
     end
 ```
 
