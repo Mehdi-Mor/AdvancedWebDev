@@ -86,7 +86,7 @@ sequenceDiagram
     participant S as Resource Service
     participant DB as PostgreSQL
 
-    U->>F: Click the resources, edit the click the button
+    U->>F: Click the resources, edit, then click the button
     F->>F: Client-side validation
     alt Client validation fails
         F-->>U: Show validation messages
