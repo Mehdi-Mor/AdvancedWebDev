@@ -46,8 +46,7 @@ sequenceDiagram
     participant S as Resource Service
     participant DB as PostgreSQL
 
-    %% READ ALL
-    U->>F: Request all resources (page load or refresh)
+    U->>F: Request all resources (refreshing the page)
     F->>B: GET /api/resources
 
     B->>S: getAllResources()
@@ -57,20 +56,19 @@ sequenceDiagram
     alt Success
         S-->>B: Resource list
         B-->>F: 200 OK + data[]
-        F-->>U: Display all resources
+        F-->>U: Display all resources in the blocks of the website page
     else Database error
         S-->>B: Error
         B-->>F: 500 Internal Server Error
         F-->>U: Show error message
     end
 
-    %% READ ONE
     U->>F: Request single resource by ID
     F->>B: GET /api/resources/:id
 
     B->>S: getResourceById(id)
     S->>DB: SELECT * FROM resources WHERE id = $1
-    DB-->>S: Result row(s)
+    DB-->>S: Result
 
     alt Resource found
         S-->>B: Resource data
