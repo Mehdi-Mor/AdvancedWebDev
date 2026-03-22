@@ -70,7 +70,7 @@ sequenceDiagram
     S->>DB: SELECT * FROM resources WHERE id = $1
     DB-->>S: Result
 
-    alt Resource found
+    alt Success
         S-->>B: Resource data
         B-->>F: 200 OK + data
         F-->>U: Display resource
