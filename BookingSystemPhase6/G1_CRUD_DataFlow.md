@@ -46,7 +46,7 @@ sequenceDiagram
     participant S as Resource Service
     participant DB as PostgreSQL
 
-
+    %% READ ALL
     U->>F: Request all resources (page load or refresh)
     F->>B: GET /api/resources
 
@@ -64,23 +64,22 @@ sequenceDiagram
         F-->>U: Show error message
     end
 
-
+    %% READ ONE
     U->>F: Request single resource by ID
     F->>B: GET /api/resources/:id
 
-        B->>S: getResourceById(id)
-        S->>DB: SELECT * FROM resources WHERE id = $1
-        DB-->>S: Result row(s)
+    B->>S: getResourceById(id)
+    S->>DB: SELECT * FROM resources WHERE id = $1
+    DB-->>S: Result row(s)
 
-        alt Resource found
-            S-->>B: Resource data
-            B-->>F: 200 OK + data
-            F-->>U: Display resource
-        else Resource not found
-            S-->>B: Empty result
-            B-->>F: 404 Not Found
-            F-->>U: Show "Resource not found"
-        end
+    alt Resource found
+        S-->>B: Resource data
+        B-->>F: 200 OK + data
+        F-->>U: Display resource
+    else Resource not found
+        S-->>B: Empty result
+        B-->>F: 404 Not Found
+        F-->>U: Show "Resource not found"
     end
 ```
 
