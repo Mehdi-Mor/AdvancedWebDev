@@ -57,10 +57,6 @@ sequenceDiagram
         S-->>B: Resource list
         B-->>F: 200 OK + data[]
         F-->>U: Display all resources in the blocks of the website page
-    else Database error
-        S-->>B: Error
-        B-->>F: 500 Internal Server Error
-        F-->>U: Show error message
     end
 
     U->>F: Request single resource by ID
