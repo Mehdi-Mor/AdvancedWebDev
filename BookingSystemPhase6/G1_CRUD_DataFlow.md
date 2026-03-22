@@ -39,6 +39,49 @@ sequenceDiagram
 # 2️⃣ READ — Resource (Sequence Diagram)
 
 ```mermaid
+sequenceDiagram
+    participant U as User (Browser)
+    participant F as Frontend (resources.js)
+    participant B as Backend (Express Route)
+    participant S as Resource Service
+    participant DB as PostgreSQL
+
+
+    U->>F: Request all resources (page load or refresh)
+    F->>B: GET /api/resources
+
+    B->>S: getAllResources()
+    S->>DB: SELECT * FROM resources ORDER BY created_at DESC
+    DB-->>S: Result rows
+
+    alt Success
+        S-->>B: Resource list
+        B-->>F: 200 OK + data[]
+        F-->>U: Display all resources
+    else Database error
+        S-->>B: Error
+        B-->>F: 500 Internal Server Error
+        F-->>U: Show error message
+    end
+
+
+    U->>F: Request single resource by ID
+    F->>B: GET /api/resources/:id
+
+        B->>S: getResourceById(id)
+        S->>DB: SELECT * FROM resources WHERE id = $1
+        DB-->>S: Result row(s)
+
+        alt Resource found
+            S-->>B: Resource data
+            B-->>F: 200 OK + data
+            F-->>U: Display resource
+        else Resource not found
+            S-->>B: Empty result
+            B-->>F: 404 Not Found
+            F-->>U: Show "Resource not found"
+        end
+    end
 ```
 
 # 3️⃣ UPDATE — Resource (Sequence Diagram)
