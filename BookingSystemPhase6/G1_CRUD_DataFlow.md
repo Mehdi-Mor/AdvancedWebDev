@@ -78,6 +78,43 @@ sequenceDiagram
 # 3️⃣ UPDATE — Resource (Sequence Diagram)
 
 ```mermaid
+sequenceDiagram
+    participant U as User (Browser)
+    participant F as Frontend (form.js + resources.js)
+    participant B as Backend (Express Route)
+    participant V as express-validator
+    participant S as Resource Service
+    participant DB as PostgreSQL
+
+    U->>F: Click the resources, edit the click the button
+    F->>F: Client-side validation
+    alt Client validation fails
+        F-->>U: Show validation messages
+    else Validation OK
+        F->>B: PUT /api/resources/:id (JSON)
+
+        B->>V: Validate request
+        V-->>B: Validation result
+
+        alt Server validation fails
+            B-->>F: 400 Bad Request + errors[]
+            F-->>U: Show validation messages
+        else Validation OK
+            B->>S: updateResource(id, data)
+            S->>DB: UPDATE resources ... RETURNING *
+            DB-->>S: Result row(s)
+
+            alt Duplicate resource name
+                S-->>B: DB error code 23505
+                B-->>F: 409 Conflict
+                F-->>U: Show "Duplicate resource name"
+            else Success
+                S-->>B: Updated resource
+                B-->>F: 200 OK + data
+                F-->>U: Show updated resource
+            end
+        end
+    end
 ```
 
 # 4️⃣ DELETE — Resource (Sequence Diagram)
