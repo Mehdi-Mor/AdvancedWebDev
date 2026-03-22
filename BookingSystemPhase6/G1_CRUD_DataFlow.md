@@ -64,7 +64,7 @@ sequenceDiagram
     S->>DB: SELECT * FROM resources WHERE id = $1
     DB-->>S: Result/Empty
 
-    alt Resource not found using curl
+    alt Resource not found
         S-->>B: Empty result
         B-->>F: 404 Not Found
         F-->>U: Show "Resource not found"
