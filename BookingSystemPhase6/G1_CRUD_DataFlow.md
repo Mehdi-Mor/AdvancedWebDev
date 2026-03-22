@@ -46,7 +46,7 @@ sequenceDiagram
     participant S as Resource Service
     participant DB as PostgreSQL
 
-    U->>F: Request all resources (refreshing the page)
+    U->>F: Request all resources
     F->>B: GET /api/resources
 
     B->>S: getAllResources()
@@ -55,7 +55,7 @@ sequenceDiagram
 
     S-->>B: Resource list
     B-->>F: 200 OK + data[]
-    F-->>U: Display all resources in the blocks of the website page
+    F-->>U: Display all resources
 
     U->>F: Request single resource by ID
     F->>B: GET /api/resources/:id
