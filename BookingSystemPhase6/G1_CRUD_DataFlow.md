@@ -53,11 +53,9 @@ sequenceDiagram
     S->>DB: SELECT * FROM resources ORDER BY created_at DESC
     DB-->>S: Result rows
 
-    alt Success
-        S-->>B: Resource list
-        B-->>F: 200 OK + data[]
-        F-->>U: Display all resources in the blocks of the website page
-    end
+    S-->>B: Resource list
+    B-->>F: 200 OK + data[]
+    F-->>U: Display all resources in the blocks of the website page
 
     U->>F: Request single resource by ID
     F->>B: GET /api/resources/:id
