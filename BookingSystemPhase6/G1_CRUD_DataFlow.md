@@ -136,18 +136,10 @@ sequenceDiagram
     S->>DB: DELETE FROM resources WHERE id = $1
     DB-->>S: rowCount
 
-    alt Resource deleted (rowCount > 0)
+    alt Resource deleted
         S-->>B: Success
         B-->>F: 204 No Content
         F-->>U: Remove resource from UI
-    else Resource not found (rowCount = 0)
-        S-->>B: No rows
-        B-->>F: 404 Not Found
-        F-->>U: Show "Resource not found"
-    else Database error
-        S-->>B: DB error
-        B-->>F: 500 Internal Server Error
-        F-->>U: Show error message
     end
 
     %% Manual test via cURL
