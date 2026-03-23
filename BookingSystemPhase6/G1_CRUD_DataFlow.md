@@ -136,11 +136,9 @@ sequenceDiagram
     S->>DB: DELETE FROM resources WHERE id = $1
     DB-->>S: rowCount
 
-    alt Resource deleted
         S-->>B: Success
         B-->>F: 204 No Content
         F-->>U: Remove resource from UI
-    end
 
     %% Manual test via cURL
     C->>B: DELETE /api/resources/:missing_id
