@@ -104,8 +104,8 @@ sequenceDiagram
             S->>DB: UPDATE resources ... RETURNING *
             DB-->>S: Result row(s)
 
-            alt Duplicate resource name
-                S-->>B: DB error code 23505
+            alt Duplicate
+                S-->>B: Duplicate detected
                 B-->>F: 409 Conflict
                 F-->>U: Show "Duplicate resource name"
             else Success
@@ -120,4 +120,41 @@ sequenceDiagram
 # 4️⃣ DELETE — Resource (Sequence Diagram)
 
 ```mermaid
+sequenceDiagram
+    participant U as User (Browser)
+    participant F as Frontend (form.js + resources.js)
+    participant B as Backend (Express Route)
+    participant S as Resource Service
+    participant DB as PostgreSQL
+    participant C as cURL (manual test)
+
+    %% User deletes a resource via frontend
+    U->>F: Select resource and click "Delete"
+    F->>B: DELETE /api/resources/:id
+
+    B->>S: deleteResource(id)
+    S->>DB: DELETE FROM resources WHERE id = $1
+    DB-->>S: rowCount
+
+    alt Resource deleted (rowCount > 0)
+        S-->>B: Success
+        B-->>F: 204 No Content
+        F-->>U: Remove resource from UI
+    else Resource not found (rowCount = 0)
+        S-->>B: No rows
+        B-->>F: 404 Not Found
+        F-->>U: Show "Resource not found"
+    else Database error
+        S-->>B: DB error
+        B-->>F: 500 Internal Server Error
+        F-->>U: Show error message
+    end
+
+    %% Manual test via cURL
+    C->>B: DELETE /api/resources/:missing_id
+    B->>S: deleteResource(missing_id)
+    S->>DB: DELETE FROM resources WHERE id = missing_id
+    DB-->>S: rowCount = 0
+    S-->>B: No rows
+    B-->>C: 404 Not Found
 ```
