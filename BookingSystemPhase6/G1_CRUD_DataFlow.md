@@ -134,17 +134,16 @@ sequenceDiagram
 
     B->>S: deleteResource(id)
     S->>DB: DELETE FROM resources WHERE id = $1
-    DB-->>S: rowCount
+    DB-->>S: found and deleted
 
         S-->>B: Success
         B-->>F: 204 No Content
         F-->>U: Remove resource from UI
 
-    %% Manual test via cURL
     C->>B: DELETE /api/resources/:missing_id
-    B->>S: deleteResource(missing_id)
-    S->>DB: DELETE FROM resources WHERE id = missing_id
-    DB-->>S: rowCount = 0
-    S-->>B: No rows
-    B-->>C: 404 Not Found
+    B->>S: deleteResource(random_missing_id)
+    S->>DB: DELETE FROM resources WHERE id = random_missing_id
+    DB-->>S: not found
+    S-->>B: 404 not found
+    B-->>C: message of missing resource
 ```
