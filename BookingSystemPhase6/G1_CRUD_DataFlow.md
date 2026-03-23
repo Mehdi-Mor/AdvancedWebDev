@@ -100,7 +100,7 @@ sequenceDiagram
             B-->>F: 400 Bad Request + errors[]
             F-->>U: Show validation messages
         else Validation OK
-            B->>S: updateResource(id, data)
+            B->>S: updateResource
             S->>DB: UPDATE resources ... RETURNING *
             DB-->>S: Result row(s)
 
@@ -134,11 +134,10 @@ sequenceDiagram
 
     B->>S: deleteResource(id)
     S->>DB: DELETE FROM resources WHERE id = $1
-    DB-->>S: found and deleted
-
-        S-->>B: Success
-        B-->>F: 204 No Content
-        F-->>U: Remove resource from UI
+    DB-->>S: Result
+    S-->>B: Success
+    B-->>F: 204 No Content
+    F-->>U: Remove resource from UI
 
     C->>B: DELETE /api/resources/:missing_id
     B->>S: deleteResource(random_missing_id)
