@@ -1,44 +1,37 @@
-# 1️⃣ CREATE — Resource (Sequence Diagram)
+# 1️⃣ CREATE – RResource (Sequence Diagram)
 
 ```mermaid
 sequenceDiagram
     participant U as User (Browser)
     participant F as Frontend (form.js and resources.js)
     participant B as Backend (Express Route)
-    participant S as Resource Service
     participant V as express-validator
+    participant S as Resource Service
     participant DB as PostgreSQL
 
     U->>F: Submit form
     F->>F: Client-side validation
     F->>B: POST /api/resources (JSON)
-    B->>S: createResource(data)
 
-    S->>V: Validate request
-    V-->>S: Validation result
+    B->>V: Validate request
+    V-->>B: Validation result
 
-    alt Validation fails (express-validator)
-        S-->>B: Validation errors
+    alt Validation fails
         B-->>F: 400 Bad Request + errors[]
         F-->>U: Show validation message
     else Validation OK
-        S->>DB: INSERT INTO resources (...) RETURNING *
+        B->>S: create Resource(data)
+        S->>DB: INSERT INTO resources
+        DB-->>S: Result / Duplicate error
 
-        alt Duplicate (unique constraint)
-            DB-->>S: Error (duplicate)
+        alt Duplicate
             S-->>B: Duplicate detected
             B-->>F: 409 Conflict
             F-->>U: Show duplicate message
         else Success
-            DB-->>S: Inserted row
             S-->>B: Created resource
-            B-->>F: 201 Created + data
+            B-->>F: 201 Created
             F-->>U: Show success message
-        else Database error
-            DB-->>S: Error
-            S-->>B: Database error
-            B-->>F: 500 Internal Server Error
-            F-->>U: Show database error
         end
     end
 ```
