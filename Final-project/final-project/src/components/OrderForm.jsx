@@ -1,27 +1,105 @@
-import { useMemo } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { z } from 'zod'
+import { Link } from 'react-router-dom'
+
+const orderSchema = z
+  .object({
+    product: z.string().min(1, 'Choose a product'),
+    quantity: z.number().min(1, 'Quantity must be at least 1').max(4, 'Quantity can be at most 4'),
+    startDate: z.string().min(1, 'Choose a start date'),
+    endDate: z.string().min(1, 'Choose an end date'),
+    firstName: z.string().min(2, 'First name must be at least 2 characters'),
+    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
+    email: z.string().email('Please enter a valid email address'),
+    phoneNumber: z.string().min(5, 'Please enter a valid telephone number'),
+    plan: z.string().min(1, 'Please select an answer'),
+    acceptTerms: z.boolean().refine((value) => value === true, {
+      message: 'You must accept the terms',
+    }),
+    subscribeNewsletter: z.boolean(),
+    message: z.string().optional(),
+  })
+  .refine((data) => new Date(data.startDate) <= new Date(data.endDate), {
+    message: 'End date must be the same or after the start date',
+    path: ['endDate'],
+  })
+
+const initialFormData = {
+  product: '',
+  quantity: 1,
+  startDate: '',
+  endDate: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phoneNumber: '',
+  plan: '',
+  acceptTerms: false,
+  subscribeNewsletter: false,
+  message: '',
+}
 
 export default function OrderForm() {
-  const navigate = useNavigate()
   const minDate = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const [formData, setFormData] = useState(initialFormData)
+  const [errors, setErrors] = useState({})
+  const [successMessage, setSuccessMessage] = useState('')
+  const [apiResponse, setApiResponse] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e) {
+  function handleChange(event) {
+    const { name, value, type, checked } = event.target
+    const nextValue = type === 'checkbox' ? checked : type === 'number' ? Number(value) : value
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: nextValue,
+    }))
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault()
-    const form = e.currentTarget
-    if (!form.checkValidity()) {
-      form.reportValidity()
+    setLoading(true)
+    setSuccessMessage('')
+    setApiResponse(null)
+
+    const result = orderSchema.safeParse(formData)
+
+    if (!result.success) {
+      const fieldErrors = {}
+      result.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0]
+        fieldErrors[fieldName] = issue.message
+      })
+      setErrors(fieldErrors)
+      setLoading(false)
       return
     }
-    navigate('/thanks')
+
+    setErrors({})
+
+    try {
+      const response = await fetch('https://httpbin.org/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result.data),
+      })
+
+      const data = await response.json()
+      setApiResponse(data)
+      setSuccessMessage('Form submitted and sent to server successfully!')
+    } catch (error) {
+      setSuccessMessage('Something went wrong while sending data. Please try again.')
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <form
-      action="/thanks"
-      method="get"
-      onSubmit={handleSubmit}
-      className="mx-auto max-w-5xl px-4 py-9 sm:px-6"
-    >
+    <form onSubmit={handleSubmit} className="mx-auto max-w-5xl px-4 py-9 sm:px-6">
       <section className="mx-auto max-w-5xl px-6 py-9 text-center">
         <h1 className="mb-9 text-4xl font-bold">Order confirmation</h1>
 
@@ -33,9 +111,9 @@ export default function OrderForm() {
             <select
               id="product"
               name="product"
-              required
+              value={formData.product}
+              onChange={handleChange}
               className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue=""
             >
               <option value="">-- Select a product --</option>
               <option value="city-bike">VTT standard - 20€ / day</option>
@@ -48,25 +126,25 @@ export default function OrderForm() {
               <option value="motorcycle">Moto Guzzi motorcycle - 75€ / day</option>
               <option value="dirt bike">KTM 300 XC dirt bike - 85€ / day</option>
             </select>
+            {errors.product && <p className="text-left text-sm text-red-600">{errors.product}</p>}
 
             <label htmlFor="quantity" className="flex flex-col">
               How many?(1-4)
               <input
                 id="quantity"
                 name="quantity"
-                required
                 type="number"
                 min={1}
                 max={4}
-                defaultValue={1}
+                value={formData.quantity}
+                onChange={handleChange}
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-64"
               />
             </label>
+            {errors.quantity && <p className="text-left text-sm text-red-600">{errors.quantity}</p>}
 
-            <div>
-              <span className="text-sm font-medium text-gray-700">
-                Pick your rental dates:
-              </span>
+            <div className="w-full">
+              <span className="text-sm font-medium text-gray-700">Pick your rental dates:</span>
 
               <div className="mt-2 flex flex-col sm:flex-row sm:gap-4">
                 <div className="flex flex-col">
@@ -74,8 +152,9 @@ export default function OrderForm() {
                   <input
                     id="startDate"
                     name="startDate"
-                    required
                     type="date"
+                    value={formData.startDate}
+                    onChange={handleChange}
                     min={minDate}
                     className="rounded border border-gray-300 px-3 py-2 text-sm"
                   />
@@ -85,47 +164,53 @@ export default function OrderForm() {
                   <input
                     id="endDate"
                     name="endDate"
-                    required
                     type="date"
-                    min={minDate}
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    min={formData.startDate || minDate}
                     className="rounded border border-gray-300 px-3 py-2 text-sm"
                   />
                 </div>
               </div>
+              {errors.endDate && <p className="text-left text-sm text-red-600">{errors.endDate}</p>}
             </div>
           </div>
 
           <div className="flex flex-col space-y-4">
             <h2 className="text-2xl font-semibold">Enter your information</h2>
 
-            <label htmlFor="first-name" className="text-sm font-medium text-gray-700">
+            <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
               First name
             </label>
             <div className="flex flex-col space-y-1">
               <input
-                id="first-name"
+                id="firstName"
                 type="text"
-                name="first-name"
-                required
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 autoComplete="given-name"
                 className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your first name"
               />
+              {errors.firstName && <p className="text-left text-sm text-red-600">{errors.firstName}</p>}
             </div>
 
-            <label htmlFor="last-name" className="text-sm font-medium text-gray-700">
+            <label htmlFor="lastName" className="text-sm font-medium text-gray-700">
               Last name
             </label>
             <div className="flex flex-col space-y-1">
               <input
-                id="last-name"
+                id="lastName"
                 type="text"
-                name="last-name"
-                required
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 autoComplete="family-name"
                 className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your last name"
               />
+              {errors.lastName && <p className="text-left text-sm text-red-600">{errors.lastName}</p>}
             </div>
 
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -136,10 +221,12 @@ export default function OrderForm() {
                 id="email"
                 name="email"
                 type="email"
-                required
+                value={formData.email}
+                onChange={handleChange}
                 className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="email.address@example.com"
               />
+              {errors.email && <p className="text-left text-sm text-red-600">{errors.email}</p>}
             </div>
 
             <label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
@@ -150,10 +237,12 @@ export default function OrderForm() {
                 id="phoneNumber"
                 name="phoneNumber"
                 type="tel"
-                required
+                value={formData.phoneNumber}
+                onChange={handleChange}
                 className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="E.g. +358 123 4567"
               />
+              {errors.phoneNumber && <p className="text-left text-sm text-red-600">{errors.phoneNumber}</p>}
             </div>
 
             <fieldset className="space-y-2">
@@ -167,7 +256,8 @@ export default function OrderForm() {
                   name="plan"
                   type="radio"
                   value="yes"
-                  required
+                  checked={formData.plan === 'yes'}
+                  onChange={handleChange}
                   className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="plan-yes" className="text-sm text-gray-700">
@@ -181,12 +271,15 @@ export default function OrderForm() {
                   name="plan"
                   type="radio"
                   value="no"
+                  checked={formData.plan === 'no'}
+                  onChange={handleChange}
                   className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="plan-no" className="text-sm text-gray-700">
                   No
                 </label>
               </div>
+              {errors.plan && <p className="text-left text-sm text-red-600">{errors.plan}</p>}
             </fieldset>
 
             <div className="mt-4 flex items-center space-x-2">
@@ -194,7 +287,8 @@ export default function OrderForm() {
                 id="acceptTerms"
                 name="acceptTerms"
                 type="checkbox"
-                required
+                checked={formData.acceptTerms}
+                onChange={handleChange}
                 className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <label htmlFor="acceptTerms" className="text-sm text-gray-700">
@@ -208,12 +302,15 @@ export default function OrderForm() {
                 </Link>
               </label>
             </div>
+            {errors.acceptTerms && <p className="text-left text-sm text-red-600">{errors.acceptTerms}</p>}
 
             <div className="mt-4 flex items-center space-x-2">
               <input
                 id="subscribeNewsletter"
                 name="subscribeNewsletter"
                 type="checkbox"
+                checked={formData.subscribeNewsletter}
+                onChange={handleChange}
                 className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <label htmlFor="subscribeNewsletter" className="text-sm text-gray-700">
@@ -221,14 +318,14 @@ export default function OrderForm() {
               </label>
             </div>
 
-            <span className="text-sm font-medium text-gray-700">
-              Additional notes/wishes
-            </span>
+            <span className="text-sm font-medium text-gray-700">Additional notes/wishes</span>
 
             <textarea
               id="message"
               name="message"
               rows={4}
+              value={formData.message}
+              onChange={handleChange}
               className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="E.g. Please add the coolest looking helmet you got"
             />
@@ -236,13 +333,25 @@ export default function OrderForm() {
             <div className="py-9 text-center">
               <button
                 type="submit"
-                className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+                disabled={loading}
+                className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-300"
               >
-                Submit rental request
+                {loading ? 'Submitting...' : 'Submit rental request'}
               </button>
             </div>
           </div>
         </div>
+
+        {successMessage && <p className="mt-6 text-left text-green-700">{successMessage}</p>}
+
+        {apiResponse && (
+          <div className="mt-6 rounded-xl bg-white p-5 shadow-sm text-left">
+            <h2 className="mb-3 text-2xl font-semibold">Server response</h2>
+            <pre className="overflow-x-auto rounded bg-slate-950 p-4 text-sm text-slate-100">
+              {JSON.stringify(apiResponse.json, null, 2)}
+            </pre>
+          </div>
+        )}
       </section>
     </form>
   )
