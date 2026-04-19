@@ -25,6 +25,9 @@ export default function Header() {
           <NavLink to="/orders" className={linkClass}>
             My orders
           </NavLink>
+          <NavLink to="/entries" className={linkClass}>
+            Saved Entries
+          </NavLink>
         </nav>
       </div>
     </header>

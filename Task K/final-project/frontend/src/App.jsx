@@ -5,6 +5,7 @@ import OrdersPage from './pages/OrdersPage.jsx'
 import ThanksPage from './pages/ThanksPage.jsx'
 import RentalTermsPage from './pages/RentalTermsPage.jsx'
 import PrivacyPage from './pages/PrivacyPage.jsx'
+import EntriesPage from './pages/EntriesPage.jsx'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/orders" element={<OrdersPage />} />
+      <Route path="/entries" element={<EntriesPage />} />
       <Route path="/thanks" element={<ThanksPage />} />
       <Route path="/rental-terms" element={<RentalTermsPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
