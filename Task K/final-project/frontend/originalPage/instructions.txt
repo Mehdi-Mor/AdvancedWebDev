@@ -1,0 +1,81 @@
+2️⃣ Form Structure & Fields
+The order form must be built using semantic HTML (<form>, <label>, etc.) and include at least the following fields:
+
+1. Customer information ✅
+-Full name (text)  ✅
+-Email address (type email) ✅
+-Phone number (type tel) ✅
+
+
+2. Rental details (the following are examples)
+-Item to rent: ✅
+    -A <select> dropdown with options that match your catalog items (same or similar names). ✅
+-Rental period:
+    -Start date (type date) ✅
+    -End date (type date) or number of days (type number) ✅
+-Quantity (type number, with sensible min and maybe max) ✅
+
+
+3. Additional info & consent
+-Free text area (type textarea) for message / special wishes. ✅
+-Checkbox to accept terms and conditions (e.g., “I accept the rental terms and privacy policy”). ✅
+-Optional: Another checkbox such as “Subscribe to newsletter”.✅
+
+
+4.Submit 
+-A clear submit button, e.g., “Send order request” or “Submit rental request”.✅
+
+
+    You are not required to implement a backend.
+    The form can:
+    Either send data to a dummy URL (e.g. action="thanks.html"), or ✅
+    Be used just for HTML/JS validation practice without real submission.
+
+
+3️⃣ Validation & UX (Validation is optional!)
+-Use HTML5 validation attributes:
+    -'required' for fields that must be filled in.✅
+    -'type="email"' for email.✅
+    -'type="tel"' and/or pattern for phone number (if you want a specific format).✅
+    - min, max, step for numeric values (e.g., quantity, number of days).✅
+    - min on type="date" inputs to prevent past dates (optional).✅
+
+-Make sure:
+    -Each input has a clear label describing what is expected.✅
+    -The error messages are understandable for normal users.✅
+
+-Optional (extra quality):
+    -Use JavaScript to show custom error messages below the inputs.
+    -Highlight invalid fields with a subtle border/background.
+
+
+4️⃣ Visual Consistency
+-Use the same CSS/Tailwind setup as your Landing and Catalog pages:✅
+    -Same color palette.
+    -Same fonts and general typography rules.
+    -Same button styles, spacing, and card feel.
+-The form should feel like a natural extension of your existing site:✅
+    -Align content with the same max width, padding, and layout grid.
+    -On small screens, the layout must be responsive (form should be easy to use on mobile).
+
+
+5️⃣ Semantics & Accessibility
+-Use semantic HTML:✅
+    -<main> for main content.
+    -<section> for different logical parts (intro, form, etc.).
+    -<h1>, <h2>, … with a logical heading hierarchy.
+-For the form:✅
+    -Use <label for="..."> paired with id on inputs.
+    -Group related fields using <fieldset> and <legend> where appropriate (e.g., rental period, customer info).
+-Make sure:✅
+    -Focus states are visible (keyboard users can see where they are).
+    -Contrast is sufficient between text and background.
+    -Button text is descriptive (avoid “Click here”; prefer “Submit rental request”).
+
+6️⃣ Tech Choices
+-You may use:
+    -Plain CSS (external stylesheet), or
+    -Tailwind CSS, reusing your existing setup.
+-The code must be:
+    -Cleanly formatted.
+    -HTML-valid — use the W3C HTML Validator before submission.

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>RideFlow Rentals</title>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <img src="images/ridelogo.PNG" alt="RideFlow logo" class="h-9 mx-6 hidden md:block">
+            <nav class="flex gap-6 items-center justify-end w-full md:w-auto">
+                <a href="home.html" class="hover:text-green-500">Home</a>
+                <a href="catalog.html" class="hover:text-green-500">Catalog</a>
+                <a href="index.html" class="border-b-2 border-green-500 hover:text-green-500">My orders</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero background -->
+    <div class="relative sm:h-96 h-64 md:h-[550px] bg-cover bg-bottom"
+        style="background-image: url('images/7732616_5243.svg');">
+    </div>
+
+
+    <!-- Order confirmation & form -->
+    <form action="thanks.html" method="GET" class="max-w-5xl mx-auto px-4 sm:px-6 py-9">
+        <section class="max-w-5xl mx-auto px-6 py-9 text-center">
+            <h1 class="text-4xl font-bold mb-9">Order confirmation</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!--Left column (product info/summary)-->
+                <div
+                    class="flex flex-col border border-b-black md:border-b-0 md:border-r-black items-start space-y-4 p-4 bg-gray-100">
+                    <label for="product" class="text-2xl font-semibold">Choose a product</label>
+                    <select id="product" name="product" required class="w-full border border-gray-300 rounded px-3 py-2 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">-- Select a product --</option>
+                        <option value="city-bike">VTT standard - 20€ / day</option>
+                        <option value="mountain-bike">VTT with baby seat - 24€ / day</option>
+                        <option value="electric-scooter">BMX bike - 22€ / day</option>
+                        <option value="e-bike">Neomouv e-bike - 38€ / day</option>
+                        <option value="foldable e-bike">Ness Icon foldable e-bike - 34€ / day</option>
+                        <option value="electric fatbike">Sduro Fatsix electric fatbike - 48€ / day</option>
+                        <option value="vespa">Vespa scooter - 55€ / day</option>
+                        <option value="motorcycle">Moto Guzzi motorcycle - 75€ / day</option>
+                        <option value="dirt bike">KTM 300 XC dirt bike - 85€ / day</option>
+                    </select>
+
+                    <label for="quantity" class="flex flex-col">
+                        How many?(1-4)
+                        <input id="quantity" required type="number" min="1" max="4" value="1"
+                            class="w-full md:w-64 border border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </label>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-700">
+                            Pick your rental dates:
+                        </span>
+
+                        <div class="mt-2 flex flex-col sm:flex-row sm:gap-4">
+                            <div class="flex flex-col">
+                                <span class="text-sm">Start date</span>
+                                <input id="startDate" required type="date" min="2025-12-05"
+                                    class="border border-gray-300 rounded px-3 py-2 text-sm">
+                            </div>
+                            <div class="flex flex-col mt-2 sm:mt-0">
+                                <span class="text-sm">End date</span>
+                                <input id="endDate" required type="date" min="2025-12-05"
+                                    class="border border-gray-300 rounded px-3 py-2 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Right column (user information) -->
+
+                <div class="flex flex-col space-y-4">
+                    <h2 class="text-2xl font-semibold">Enter your information</h2>
+
+                    <!-- First name -->
+                    <label for="first-name" class="text-sm font-medium text-gray-700">
+                        First name
+                    </label>
+                    <div class="flex flex-col space-y-1">
+                        <input id="first-name" type="text" name="first-name" required autocomplete="given-name" class="border border-gray-300 rounded px-3 py-2 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter your first name">
+                    </div>
+
+                    <!-- Last name -->
+                    <label for="last-name" class="text-sm font-medium text-gray-700">
+                        Last name
+                    </label>
+                    <div class="flex flex-col space-y-1">
+                        <input id="last-name" type="text" name="last-name" required autocomplete="family-name"
+                            class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter your last name">
+                    </div>
+
+                    <!-- Email -->
+                    <label for="email" class="text-sm font-medium text-gray-700">
+                        Email address
+                    </label>
+                    <div class="flex flex-col space-y-1">
+                        <input id="email" name="email" type="email" required
+                            class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="email.address@example.com">
+                    </div>
+
+                    <!-- Phonenumber -->
+                    <label for="phoneNumber" class="text-sm font-medium text-gray-700">
+                        Telephone number
+                    </label>
+                    <div class="flex flex-col space-y-1">
+                        <input id="phoneNumber" name="phoneNumber" type="tel" required
+                            class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="E.g. +358 123 4567">
+                    </div>
+
+
+                    <!-- Customer check -->
+                    <fieldset class="space-y-2">
+                        <legend class="text-sm font-medium text-gray-700 mb-1">
+                            Have you use RideFlow's services before?
+                        </legend>
+
+                        <div class="flex items-center space-x-2">
+                            <input id="basic" name="plan" type="radio" value="yes"
+                                class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500" required>
+                            <label for="basic" class="text-sm text-gray-700">Yes</label>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <input id="pro" name="plan" type="radio" value="no"
+                                class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="pro" class="text-sm text-gray-700">No</label>
+                        </div>
+                    </fieldset>
+
+                    <!--Terms & Conditions-->
+                    <div class="flex items-center space-x-2 mt-4">
+                        <input id="acceptTerms" name="acceptTerms" type="checkbox" required
+                            class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label for="acceptTerms" class="text-sm text-gray-700">
+                            I accept the <a href="rental-terms.html" class="text-blue-600 underline">rental terms</a>
+                            and <a href="privacy.html" class="text-blue-600 underline">privacy policy</a>
+                        </label>
+                    </div>
+
+                    <!--News letter-->
+                    <div class="flex items-center space-x-2 mt-4">
+                        <input id="subscribeNewsletter" name="subscribeNewsletter" type="checkbox"
+                            class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label for="subscribeNewsletter" class="text-sm text-gray-700">
+                            Subscribe to our newsletter
+                        </label>
+                    </div>
+
+                    <!-- Free text area -->
+                    <span class="text-sm font-medium text-gray-700">
+                        Additional notes/wishes
+                    </span>
+
+                    <textarea id="message" name="message" rows="4"
+                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="E.g. Please add the coolest looking helmet you got"></textarea>
+
+
+                    <div class="text-center py-9">
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                            Submit rental request
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+
+
+    <footer class="bg-green-900 text-white text-center p-3 text-sm">
+        © 2025 RideFlow Rentals. All rights reserved.
+        <div class="flex gap-5 justify-center py-3">
+            <a href="https://facebook.com">
+                <img src="images/fblogo.png" alt="FacebookLink" class="h-7 w-7">
+            </a>
+            <a href="https://instagram.com">
+                <img src="images/iglogo.png" alt="instagramLink" class="h-7 w-7">
+            </a>
+            <a href="https://x.com">
+                <img src="images/xlogo.png" alt="xLink" class="h-7 w-7">
+            </a>
+            <a href="https://tiktok.com">
+                <img src="images/Tiktok_icon.svg.png" alt="tiktokLink" class="h-7 w-7">
+            </a>
+        </div>
+    </footer>
+
+</body>
+
+</html>
